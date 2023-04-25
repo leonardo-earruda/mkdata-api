@@ -4,7 +4,6 @@ import com.mkdata.mkdataapi.domains.cliente.dto.request.ClienteRequestDTO;
 import com.mkdata.mkdataapi.domains.cliente.enums.StatusCliente;
 import com.mkdata.mkdataapi.domains.cliente.enums.TipoPessoa;
 import com.mkdata.mkdataapi.domains.telefone.Telefone;
-import com.mkdata.mkdataapi.domains.telefone.assembler.TelefoneAssembler;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,8 +12,9 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -63,13 +63,36 @@ public class Cliente {
         this.deletedAt = LocalDateTime.now();
     }
 
-    public void update(ClienteRequestDTO cliente) {
-        this.updatedAt = LocalDateTime.now();
-        this.name = cliente.getName();
-        this.personType = cliente.getPersonType();
-        this.documentNumber = cliente.getDocumentNumber();
-        this.registerNumber = cliente.getRegisterNumber();
-        this.telephoneNumbers = TelefoneAssembler.toEntity(cliente.getTelephoneNumbers(), this);
+    public Cliente updateEntity(ClienteRequestDTO clienteRequestDTO) {
+        this.name = clienteRequestDTO.getName();
+        this.personType = clienteRequestDTO.getPersonType();
+        this.documentNumber = clienteRequestDTO.getDocumentNumber();
+        this.registerNumber = clienteRequestDTO.getRegisterNumber();
+
+        Map<UUID, Telefone> telephonesById = this.telephoneNumbers.stream()
+                .collect(Collectors.toMap(Telefone::getId, Function.identity()));
+
+        List<Telefone> updatedTelephones = clienteRequestDTO.getTelephoneNumbers().stream()
+                .map(dto -> {
+                    Telefone telephone;
+                    if (dto.getId() == null) {
+                        telephone = dto.toEntity();
+                        telephone.setCliente(this);
+                    } else {
+                        telephone = telephonesById.get(dto.getId());
+                        dto.updateEntity(telephone);
+                    }
+                    return telephone;
+                }).toList();
+
+        Set<Telefone> updatedTelephonesSet = new HashSet<>(updatedTelephones);
+        telephonesById.values().stream()
+                .filter(telephone -> !updatedTelephonesSet.contains(telephone))
+                .forEach(telephone -> telephone.setCliente(null));
+
+        this.telephoneNumbers.clear();
+        this.telephoneNumbers.addAll(updatedTelephones);
+        return this;
     }
 
 }

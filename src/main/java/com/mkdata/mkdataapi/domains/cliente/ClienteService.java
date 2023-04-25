@@ -39,9 +39,7 @@ public class ClienteService {
 
     public Cliente update(ClienteRequestDTO clienteRequestDTO, UUID id) {
         Cliente cliente = clienteRepository.findById(id);
-        clienteRequestDTO.getTelephoneNumbers();
-        cliente.update(clienteRequestDTO);
-
+        cliente.updateEntity(clienteRequestDTO);
         return clienteRepository.save(cliente);
     }
 

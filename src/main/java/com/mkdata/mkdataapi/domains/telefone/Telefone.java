@@ -45,4 +45,9 @@ public class Telefone {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public void update(Telefone telefone) {
+        this.number = telefone.getNumber();
+        this.ddd = telefone.getDdd();
+    }
 }

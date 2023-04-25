@@ -19,6 +19,7 @@ public class TelefoneDTO {
    public TelefoneDTO(Telefone telefone) {
         this.number = telefone.getNumber();
         this.ddd = telefone.getDdd();
+        this.id = telefone.getId();
     }
 
     public TelefoneDTO(String number, String ddd) {
@@ -27,6 +28,13 @@ public class TelefoneDTO {
     }
 
     public Telefone updateEntity(Telefone telephone) {
+        telephone.setDdd(this.ddd);
+        telephone.setNumber(this.number);
+        return telephone;
+    }
+
+    public Telefone toEntity() {
+        Telefone telephone = new Telefone();
         telephone.setDdd(this.ddd);
         telephone.setNumber(this.number);
         return telephone;

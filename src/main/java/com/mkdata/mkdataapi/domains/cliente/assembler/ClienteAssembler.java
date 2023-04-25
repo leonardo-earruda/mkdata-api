@@ -5,11 +5,9 @@ import com.mkdata.mkdataapi.domains.cliente.dto.request.ClienteRequestDTO;
 import com.mkdata.mkdataapi.domains.cliente.dto.response.ClienteResponseDTO;
 import com.mkdata.mkdataapi.domains.telefone.Telefone;
 import com.mkdata.mkdataapi.domains.telefone.assembler.TelefoneAssembler;
-import com.mkdata.mkdataapi.domains.telefone.dto.TelefoneDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Set;
 
 @Component
@@ -30,9 +28,6 @@ public class ClienteAssembler {
 
     public ClienteResponseDTO toResponseModel(Cliente cliente) {
         ClienteResponseDTO clienteResponseDTO = new ClienteResponseDTO(cliente);
-
-        Set<TelefoneDTO> telefones = TelefoneAssembler.toResponseModel(cliente.getTelephoneNumbers());
-        clienteResponseDTO.setTelephoneNumbers(telefones);
 
         return clienteResponseDTO;
     }
