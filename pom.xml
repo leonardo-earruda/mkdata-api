@@ -14,7 +14,9 @@
 	<name>mkdataapi</name>
 	<description>MKDATA TECHNICAL TEST</description>
 	<properties>
-		<java.version>17</java.version>
+		<maven.compiler.target>16</maven.compiler.target>
+		<maven.compiler.source>16</maven.compiler.source>
+		<java.version>16</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
