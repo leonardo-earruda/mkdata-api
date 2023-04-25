@@ -8,7 +8,7 @@ import com.mkdata.mkdataapi.domains.telefone.dto.TelefoneDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -26,7 +26,7 @@ public class ClienteResponseDTO {
 
     private String registerNumber;
 
-    private List<TelefoneDTO> telephoneNumbers;
+    private Set<TelefoneDTO> telephoneNumbers;
 
     private StatusCliente customerStatus;
 
@@ -40,11 +40,11 @@ public class ClienteResponseDTO {
         this.customerStatus = cliente.getCustomerStatus();
     }
 
-    public List<TelefoneDTO> getTelephoneNumbers(List<Telefone> telefones) {
+    public Set<TelefoneDTO> getTelephoneNumbers(Set<Telefone> telefones) {
         return telefones
                 .stream()
                 .map(telefone -> new TelefoneDTO(telefone))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
 }

@@ -10,12 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
 public class ClienteAssembler {
-
-    private final TelefoneAssembler telefoneAssembler;
 
     public Cliente toEntity(ClienteRequestDTO request) {
         Cliente cliente = new Cliente(
@@ -24,7 +23,7 @@ public class ClienteAssembler {
                 request.getDocumentNumber(),
                 request.getRegisterNumber()
         );
-        List<Telefone> telefones = telefoneAssembler.toEntity(request.getTelephoneNumbers(), cliente);
+        Set<Telefone> telefones = TelefoneAssembler.toEntity(request.getTelephoneNumbers(), cliente);
         cliente.setTelephoneNumbers(telefones);
         return cliente;
     }
@@ -32,7 +31,7 @@ public class ClienteAssembler {
     public ClienteResponseDTO toResponseModel(Cliente cliente) {
         ClienteResponseDTO clienteResponseDTO = new ClienteResponseDTO(cliente);
 
-        List<TelefoneDTO> telefones = telefoneAssembler.toResponseModel(cliente.getTelephoneNumbers());
+        Set<TelefoneDTO> telefones = TelefoneAssembler.toResponseModel(cliente.getTelephoneNumbers());
         clienteResponseDTO.setTelephoneNumbers(telefones);
 
         return clienteResponseDTO;

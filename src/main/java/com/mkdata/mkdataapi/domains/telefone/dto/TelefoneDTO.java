@@ -4,9 +4,13 @@ import com.mkdata.mkdataapi.domains.telefone.Telefone;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 public class TelefoneDTO {
+
+    private UUID id;
 
     private String number;
 
@@ -22,4 +26,9 @@ public class TelefoneDTO {
         this.ddd = ddd;
     }
 
+    public Telefone updateEntity(Telefone telephone) {
+        telephone.setDdd(this.ddd);
+        telephone.setNumber(this.number);
+        return telephone;
+    }
 }

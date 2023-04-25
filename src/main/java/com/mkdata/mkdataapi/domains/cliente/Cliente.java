@@ -4,6 +4,7 @@ import com.mkdata.mkdataapi.domains.cliente.dto.request.ClienteRequestDTO;
 import com.mkdata.mkdataapi.domains.cliente.enums.StatusCliente;
 import com.mkdata.mkdataapi.domains.cliente.enums.TipoPessoa;
 import com.mkdata.mkdataapi.domains.telefone.Telefone;
+import com.mkdata.mkdataapi.domains.telefone.assembler.TelefoneAssembler;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -48,7 +49,7 @@ public class Cliente {
     private LocalDateTime updatedAt;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "cliente")
-    private List<Telefone> telephoneNumbers;
+    private Set<Telefone> telephoneNumbers;
 
     public Cliente(String name, TipoPessoa personType, String documentNumber, String registerNumber) {
         this.name = name;
@@ -62,13 +63,13 @@ public class Cliente {
         this.deletedAt = LocalDateTime.now();
     }
 
-    public void update(Cliente cliente) {
+    public void update(ClienteRequestDTO cliente) {
         this.updatedAt = LocalDateTime.now();
         this.name = cliente.getName();
         this.personType = cliente.getPersonType();
         this.documentNumber = cliente.getDocumentNumber();
         this.registerNumber = cliente.getRegisterNumber();
-        this.telephoneNumbers = cliente.getTelephoneNumbers();
+        this.telephoneNumbers = TelefoneAssembler.toEntity(cliente.getTelephoneNumbers(), this);
     }
 
 }

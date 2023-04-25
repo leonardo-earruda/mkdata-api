@@ -2,7 +2,9 @@ package com.mkdata.mkdataapi.domains.cliente.dto.request;
 
 import com.mkdata.mkdataapi.annotations.IE;
 import com.mkdata.mkdataapi.annotations.RG;
+import com.mkdata.mkdataapi.domains.cliente.Cliente;
 import com.mkdata.mkdataapi.domains.cliente.enums.TipoPessoa;
+import com.mkdata.mkdataapi.domains.telefone.Telefone;
 import com.mkdata.mkdataapi.domains.telefone.dto.TelefoneDTO;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,6 +16,11 @@ import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -35,7 +42,7 @@ public class ClienteRequestDTO {
     @RG(groups = ClienteRequestDTO.PessoaFisica.class)
     private String registerNumber;
 
-    private List<TelefoneDTO> telephoneNumbers;
+    private Set<TelefoneDTO> telephoneNumbers;
 
     public Object getInterface() {
         return TipoPessoa.PESSOA_JURIDICA.equals(personType) ?
@@ -47,6 +54,33 @@ public class ClienteRequestDTO {
     }
 
     public interface PessoaFisica {
+    }
+
+    public Cliente updateEntity(Cliente customer) {
+        customer.setName(this.name);
+        customer.setPersonType(this.personType);
+        customer.setDocumentNumber(this.documentNumber);
+        customer.setRegisterNumber(this.registerNumber);
+
+        Map<UUID, Telefone> telephonesById = customer.getTelephoneNumbers().stream()
+                .collect(Collectors.toMap(Telefone::getId, Function.identity()));
+
+        List<Telefone> updatedTelephones = this.telephoneNumbers.stream()
+                .map(dto -> {
+                    Telefone telephone;
+                    if (dto.getId() != null) {
+                        telephone = telephonesById.get(dto.getId());
+                        dto.updateEntity(telephone);
+                    } else {
+                        telephone = dto.toEntity();
+                        telephone.setCliente(customer);
+                    }
+                    return telephone;
+                }).toList();
+
+        customer.getTelephoneNumbers().clear();
+        customer.getTelephoneNumbers().addAll(updatedTelephones);
+        return customer;
     }
 
 }
