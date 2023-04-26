@@ -13,7 +13,7 @@ import java.io.IOException;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CorsFilter implements Filter {
 
-    private static final String ORIGEM_PERMITIDA = "http://localhost:4200";
+    private static final String ORIGEM_PERMITIDA = "http://mkdata-frontend.s3-website-sa-east-1.amazonaws.com";
 
     @Override
     public void doFilter(ServletRequest servletRequest,
