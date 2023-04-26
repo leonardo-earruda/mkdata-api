@@ -12,6 +12,4 @@
 
 3. Para testar a comunicação com o banco de dados, inicie uma instância do postgresql com o docker com o comando `docker-compose up`.
 
-4. Alternativamente, 
-
 4. A aplicação rodara na porta padrão `http://localhost:8080/`.
