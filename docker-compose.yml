@@ -8,8 +8,8 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_USER: mkdata
-      POSTGRES_PASSWORD: mkdata
+      POSTGRES_USER: mkdata12
+      POSTGRES_PASSWORD: mkdata12
       POSTGRES_DB: mkdataapi
 
 volumes:
